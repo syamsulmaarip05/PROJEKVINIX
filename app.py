@@ -3,13 +3,19 @@ import pandas as pd
 import altair as alt
 import numpy as np
 import pandas as pd
+import plotly.express as px
+import plotly.graph_objects as go
+import re
 
 # Load data
-df = pd.read_csv("data\DATA PROJEK VINIX baru (1).csv")
+df = pd.read_csv("data\DATA PROJEK VINIX baru (4).csv")
+
+df['Program Studi'] = df['Program Studi'].str.title().str.strip()
+df['Program Studi'] = df['Program Studi'].apply(lambda x: re.sub(r'\s+', ' ', x))
 
 st.set_page_config(layout="wide")
 st.title("Analisis Program International Undergraduate Program (IUP) di Perguruan Tinggi Negeri Indonesia")
-st.markdown("##### Disusun Oleh: Syamsul Maarip, Nadhilah, Dhifa, Fauzi")
+st.markdown("""##### Disusun Oleh: Syamsul Maarip, Nadhilah Hazrati, Difa Muflih Hilmy, Fauzi Noorsyabani""")
 
 # Tambahkan CSS custom
 st.markdown("""
@@ -30,7 +36,7 @@ selected_univ = st.selectbox("Universitas", options=universitas_list)
 df_univ = df[df['Universitas'] == selected_univ]
 
 # Buat tab seperti biasa
-tab1, tab2, tab3 = st.tabs(["📊 Daya Tampung", "📈 UKT", "📋 Tab 3"])
+tab1, tab2, tab3 = st.tabs(["📊 Daya Tampung", "📈 UKT", "📋 Analisis Keseluruhan"])
  
 with tab1:
     # --- METRICS ---
@@ -146,6 +152,13 @@ with tab1:
         {bottom_insight}
         """)
 
+    #sumber referensi
+    # Ambil sumber unik per universitas
+    sumber_unik = df_univ.groupby('Universitas')['SUMBER'].first().reset_index()
+    st.markdown("### Sumber Data")
+    for _, row in sumber_unik.iterrows():
+        st.markdown(f"- **{row['Universitas']}**: {row['SUMBER']}")
+
 
 
 
@@ -207,7 +220,7 @@ with tab2:
         st.markdown("### 💡 Insight Analisis")
 
         st.markdown(f"""
-                Data UKT **Tidak Ditemukan** untuk **{selected_univ}**.
+                Data UKT **Belum Ditemukan** untuk **{selected_univ}**.
         """)
         
 
@@ -277,7 +290,9 @@ with tab2:
         top3_str = gabung_dengan_dan(top3_detail)
         bottom3_str = gabung_dengan_dan(bottom3_detail)
 
-        
+        ukt0_list = df_univ[df_univ['UKT WNI'].isna()]['Program Studi'].tolist()
+        ukt0_str = gabung_dengan_dan(ukt0_list)
+        ukt0 = len(ukt0_list) > 0
 
         # --- Ambil nilai tertinggi, terendah, dan selisih ---
         ukt_tertinggi = df_univ['UKT WNI'].max()
@@ -287,26 +302,162 @@ with tab2:
         # --- Insight ---
         st.markdown("### 💡 Insight Analisis")
 
-        if pd.isna(ukt_tertinggi) and pd.isna(ukt_terendah):
-            st.markdown(f"""
-                Data UKT **Tidak Ditemukan** untuk **{selected_univ}**.
-            """)
-        elif ukt_tertinggi == ukt_terendah:
-            st.markdown(f"""
-                Semua program studi IUP di **{selected_univ}** memiliki UKT WNI yang seragam sebesar **Rp {ukt_tertinggi:,.0f}**.
-                Hal ini menunjukkan kebijakan tarif yang merata tanpa perbedaan antar prodi.
-            """)
+        if ukt_tertinggi == ukt_terendah:
+            if ukt0:
+                st.markdown(f"""
+                    Semua program studi IUP di **{selected_univ}** memiliki UKT WNI yang seragam sebesar **Rp {ukt_tertinggi:,.0f}**.
+                    Hal ini menunjukkan kebijakan tarif yang merata tanpa perbedaan antar prodi.
+                    Terdapat juga program studi tanpa data UKT, yaitu: **{ukt0_str}**
+                """)
+            else:
+                st.markdown(f"""
+                    Semua program studi IUP di **{selected_univ}** memiliki UKT WNI yang seragam sebesar **Rp {ukt_tertinggi:,.0f}**.
+                    Hal ini menunjukkan kebijakan tarif yang merata tanpa perbedaan antar prodi.
+                """)
         else:
-            st.markdown(f"""
-                Universitas **{selected_univ}** memiliki **{total_prodi}** program studi IUP.
-                UKT WNI tertinggi adalah pada prodi **{top3_detail[0]}**, dan 3 prodi dengan UKT terendah adalah **{bottom3_str}**.
-                Selisih antara UKT WNI tertinggi dan terendah adalah **Rp {selisih:,.0f}**.
-            """)
-
+            if ukt0:
+                st.markdown(f"""
+                    Universitas **{selected_univ}** memiliki **{total_prodi}** program studi IUP.
+                    UKT WNI tertinggi adalah pada prodi **{top3_detail[0]}**, dan 3 prodi dengan UKT terendah adalah **{bottom3_str}**.
+                    Selisih antara UKT WNI tertinggi dan terendah adalah **Rp {selisih:,.0f}**.
+                    Terdapat juga program studi tanpa data UKT, yaitu: **{ukt0_str}**.
+                """)
+            else:
+                st.markdown(f"""
+                    Universitas **{selected_univ}** memiliki **{total_prodi}** program studi IUP.
+                    UKT WNI tertinggi adalah pada prodi **{top3_detail[0]}**, dan 3 prodi dengan UKT terendah adalah **{bottom3_str}**.
+                    Selisih antara UKT WNI tertinggi dan terendah adalah **Rp {selisih:,.0f}**.
+                """)
+    #sumber referensi
+    # Ambil sumber unik per universitas
+    sumber_unik = df_univ.groupby('Universitas')['SUMBER'].first().reset_index()
+    st.markdown("### Sumber Data")
+    for _, row in sumber_unik.iterrows():
+        st.markdown(f"- **{row['Universitas']}**: {row['SUMBER']}")
 
 with tab3:
-    st.header("Tab 3")
-    st.image("https://static.streamlit.io/examples/owl.jpg")
+    # Salin dan pastikan kolom numerik
+    dfsemua = df.copy()
+    dfsemua['UKT WNI'] = pd.to_numeric(dfsemua['UKT WNI'], errors='coerce').fillna(0)
+    dfsemua['Daya Tampung'] = pd.to_numeric(dfsemua['Daya Tampung'], errors='coerce').fillna(0)
+
+    # Statistik umum
+    total_universitas = dfsemua['Universitas'].nunique()
+    rata_rataUkt = dfsemua['UKT WNI'].mean()
+    rata_rataDayaTampung = dfsemua['Daya Tampung'].mean()
+
+    col1, col2, col3 = st.columns(3)
+    col1.metric("Total Universitas", total_universitas)
+    col2.metric("Rata-Rata UKT", f"{rata_rataUkt:,.0f}")
+    col3.metric("Rata-Rata Daya Tampung", f"{rata_rataDayaTampung:,.0f}")
+
+    # Konversi UKT ke satuan juta
+    df['UKT WNI'] = pd.to_numeric(df['UKT WNI'], errors='coerce').fillna(0) / 1e6
+    df['Daya Tampung'] = pd.to_numeric(df['Daya Tampung'], errors='coerce').fillna(0)
+
+    # Agregasi
+    df_grouped = df.groupby('Universitas').agg({
+        'UKT WNI': 'mean',
+        'Program Studi': 'count',
+        'Daya Tampung': 'mean'
+    }).rename(columns={
+        'UKT WNI': 'Rata-rata UKT (Juta)',
+        'Program Studi': 'Jumlah Program Studi',
+        'Daya Tampung': 'Rata-rata Daya Tampung'
+    }).reset_index()
+
+    # Urutkan berdasarkan UKT
+    df_grouped = df_grouped.sort_values('Rata-rata UKT (Juta)', ascending=False)
+
+    # Tentukan nilai maksimum untuk sumbu Y agar semua data muat
+    max_ukt = df_grouped['Rata-rata UKT (Juta)'].max()
+    max_daya = df_grouped['Rata-rata Daya Tampung'].max()
+    max_prodi = df_grouped['Jumlah Program Studi'].max()
+    max_y = max(max_ukt, max_daya, max_prodi)
+    buffer_y = max_y * 1.2  # Tambahan ruang di atas grafik
+
+    # Buat grafik batang
+    fig = go.Figure()
+
+    fig.add_trace(go.Bar(
+        x=df_grouped['Universitas'],
+        y=df_grouped['Rata-rata UKT (Juta)'],
+        name='Rata-rata UKT (Juta)',
+        marker_color='purple',
+        text=df_grouped['Rata-rata UKT (Juta)'].round(1).astype(str) + "M",
+        textposition='outside',
+        hovertemplate='UKT: %{text}<extra></extra>'
+    ))
+
+    fig.add_trace(go.Bar(
+        x=df_grouped['Universitas'],
+        y=df_grouped['Rata-rata Daya Tampung'],
+        name='Rata-rata Daya Tampung',
+        marker_color='green',
+        text=df_grouped['Rata-rata Daya Tampung'].round().astype(int).astype(str),
+        textposition='outside',
+        hovertemplate='Daya Tampung: %{text}<extra></extra>'
+    ))
+
+    fig.add_trace(go.Bar(
+        x=df_grouped['Universitas'],
+        y=df_grouped['Jumlah Program Studi'],
+        name='Jumlah Prodi',
+        marker_color='magenta',
+        text=df_grouped['Jumlah Program Studi'].astype(str),
+        textposition='outside',
+        hovertemplate='Jumlah Prodi: %{text}<extra></extra>'
+    ))
+
+    # Update layout
+    fig.update_layout(
+        title='PERBANDINGAN UKT (Juta), DAYA TAMPUNG & JUMLAH PRODI (Nilai Asli)',
+        xaxis=dict(title='Universitas', tickangle=-45),
+        yaxis=dict(
+            title='Nilai Asli (UKT dalam Juta)',
+            range=[0, buffer_y],
+            showgrid=True
+        ),
+        barmode='group',
+        legend=dict(orientation='h', y=1.15, x=0.5, xanchor='center'),
+        height=600,
+        margin=dict(t=100)
+    )
+
+    st.plotly_chart(fig, use_container_width=True)
+
+
+    st.markdown("""### 💡 Insight Analisis""")
+    st.markdown(f"""
+        Visualisasi ini menggambarkan perbandingan rata-rata UKT, jumlah program studi, dan daya tampung dari 12 universitas di Indonesia. Institut Teknologi Bandung (ITB) dan Universitas Indonesia (UI) memiliki rata-rata UKT tertinggi, masing-masing sebesar 30 juta dan 28,6 juta rupiah. Kedua universitas ini juga dikenal memiliki banyak program studi dengan kebutuhan operasional tinggi, seperti teknik dan kesehatan. UI sendiri tercatat memiliki jumlah program studi terbanyak, yaitu 36, diikuti oleh Universitas Gadjah Mada (UGM) dengan 31 program.
+
+        Dari segi daya tampung, Universitas Diponegoro (UNDIP) menempati posisi tertinggi dengan rata-rata daya tampung sebesar 62, disusul oleh Universitas Brawijaya (UB) dengan 59 dan Universitas Sebelas Maret (UNS) dengan 52. Beberapa universitas menunjukkan daya tampung yang besar meskipun memiliki jumlah program studi yang sedikit, seperti UNS dan Universitas Hasanuddin, yang dapat mengindikasikan adanya konsentrasi kapasitas pada program studi tertentu.
+                
+        Temuan ini menunjukkan bahwa jumlah program studi tidak selalu sebanding dengan daya tampung atau besarnya UKT. Universitas dengan jumlah program studi yang banyak cenderung memiliki cakupan keilmuan yang luas, tetapi kapasitas tampung dan biaya kuliah dapat bervariasi tergantung pada kebijakan internal masing-masing institusi. Oleh karena itu, pendekatan analisis tambahan seperti rasio daya tampung terhadap jumlah program studi dapat memberikan gambaran yang lebih proporsional.
+    """)
+
+    st.subheader("2. Filter Data Berdasarkan Provinsi")
+    provinsi_list = dfsemua['Provinsi'].unique()
+    selected_provinsi = st.selectbox("Pilih Provinsi", sorted(provinsi_list))
+    filtered_by_provinsi = dfsemua[dfsemua['Provinsi'] == selected_provinsi]
+    st.markdown(f"#### Data untuk Provinsi: {selected_provinsi}")
+    st.dataframe(
+        filtered_by_provinsi[['Universitas','Program Studi', 'UKT WNI', 'Daya Tampung']].reset_index(drop=True),
+        use_container_width=True
+    )
+
+    st.subheader("3. Cari dan Tampilkan Data Berdasarkan Program Studi")
+
+    prodi_list = dfsemua['Program Studi'].unique()
+    selected_prodi = st.selectbox("Cari Program Studi", sorted(prodi_list))
+
+    filtered_by_prodi = dfsemua[dfsemua['Program Studi'] == selected_prodi]
+    st.markdown(f"#### Data untuk Program Studi: {selected_prodi}")
+    st.dataframe(
+        filtered_by_prodi[['Universitas','Program Studi', 'UKT WNI', 'Daya Tampung']].reset_index(drop=True),
+        use_container_width=True
+    )
+
 
 
 
