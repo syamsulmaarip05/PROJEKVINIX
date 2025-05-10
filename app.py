@@ -52,7 +52,7 @@ with tab1:
     col1, col2, col3 = st.columns(3)
     col1.metric("Total Prodi", total_prodi)
     col2.metric("Total Daya Tampung", f"{total_daya:,}")
-    col3.metric("Rata-Rata Daya Tampung", f"{rata_daya:.2f}")
+    col3.metric("Rata-Rata Daya Tampung", f"{rata_daya:.0f}")
 
     # --- TABEL PROGRAM STUDI ---
     st.markdown("#### 📋 Daftar Program Studi dan Daya Tampung")
@@ -180,7 +180,7 @@ with tab2:
         col1, col2, col3 = st.columns(3)
         col1.metric("Total Prodi", total_prodi)
         col2.metric("Total UKT WNI", f"{total_ukt:,.0f}")
-        col3.metric("Rata-Rata UKT WNI", f"{rata_ukt:,.2f}")
+        col3.metric("Rata-Rata UKT WNI", f"{rata_ukt:,.0f}")
 
         # --- TABEL PROGRAM STUDI ---
         st.markdown("#### 📋 Daftar Program Studi dan UKT WNI")
