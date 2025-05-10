@@ -9,13 +9,7 @@ import re
 
 url = 'https://github.com/syamsulmaarip05/PROJEKVINIX/raw/refs/heads/main/data/DATA%20PROJEK%20VINIX%20baru%20(4).csv'
 
-try:
-    df = pd.read_csv(url)
-    st.write("Data berhasil dimuat:")
-    st.dataframe(df)
-except Exception as e:
-    st.error(f"Gagal membaca data: {e}")
-
+df = pd.read_csv(url)
 
 df['Program Studi'] = df['Program Studi'].str.title().str.strip()
 df['Program Studi'] = df['Program Studi'].apply(lambda x: re.sub(r'\s+', ' ', x))
