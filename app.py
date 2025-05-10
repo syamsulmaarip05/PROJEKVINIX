@@ -7,8 +7,15 @@ import plotly.express as px
 import plotly.graph_objects as go
 import re
 
-# Load data
-df = pd.read_csv("data\DATA PROJEK VINIX baru (4).csv")
+url = 'https://github.com/syamsulmaarip05/PROJEKVINIX/raw/refs/heads/main/data/DATA%20PROJEK%20VINIX%20baru%20(4).csv'
+
+try:
+    df = pd.read_csv(url)
+    st.write("Data berhasil dimuat:")
+    st.dataframe(df)
+except Exception as e:
+    st.error(f"Gagal membaca data: {e}")
+
 
 df['Program Studi'] = df['Program Studi'].str.title().str.strip()
 df['Program Studi'] = df['Program Studi'].apply(lambda x: re.sub(r'\s+', ' ', x))
