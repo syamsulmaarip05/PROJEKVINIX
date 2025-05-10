@@ -437,7 +437,7 @@ with tab3:
         Temuan ini menunjukkan bahwa jumlah program studi tidak selalu sebanding dengan daya tampung atau besarnya UKT. Universitas dengan jumlah program studi yang banyak cenderung memiliki cakupan keilmuan yang luas, tetapi kapasitas tampung dan biaya kuliah dapat bervariasi tergantung pada kebijakan internal masing-masing institusi. Oleh karena itu, pendekatan analisis tambahan seperti rasio daya tampung terhadap jumlah program studi dapat memberikan gambaran yang lebih proporsional.
     """)
 
-    st.subheader("2. Filter Data Berdasarkan Provinsi")
+    st.subheader("Filter Data Berdasarkan Provinsi")
     provinsi_list = dfsemua['Provinsi'].unique()
     selected_provinsi = st.selectbox("Pilih Provinsi", sorted(provinsi_list))
     filtered_by_provinsi = dfsemua[dfsemua['Provinsi'] == selected_provinsi]
@@ -447,7 +447,7 @@ with tab3:
         use_container_width=True
     )
 
-    st.subheader("3. Cari dan Tampilkan Data Berdasarkan Program Studi")
+    st.subheader("Filter Data Berdasarkan Program Studi")
 
     prodi_list = dfsemua['Program Studi'].unique()
     selected_prodi = st.selectbox("Cari Program Studi", sorted(prodi_list))
