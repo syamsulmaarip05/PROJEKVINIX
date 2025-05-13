@@ -7,7 +7,7 @@ import plotly.express as px
 import plotly.graph_objects as go
 import re
 
-url = 'https://github.com/syamsulmaarip05/PROJEKVINIX/raw/refs/heads/main/data/Data%20PROJEK%20VINIX%20BARU.csv'
+url = 'https://github.com/syamsulmaarip05/PROJEKVINIX/raw/refs/heads/main/data/DATAPROJEKNLP.csv'
 
 df = pd.read_csv(url)
 
