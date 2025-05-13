@@ -428,14 +428,37 @@ with tab3:
     st.plotly_chart(fig, use_container_width=True)
 
 
+    # Ambil universitas dengan UKT tertinggi
+    top_ukt = df_grouped.sort_values('Rata-rata UKT (Juta)', ascending=False).head(2)
+    top_prodi = df_grouped.sort_values('Jumlah Program Studi', ascending=False).head(2)
+    top_daya = df_grouped.sort_values('Rata-rata Daya Tampung', ascending=False).head(3)
+    
+    # Universitas dengan UKT tertinggi
+    uni_ukt1, ukt1 = top_ukt.iloc[0]['Universitas'], top_ukt.iloc[0]['Rata-rata UKT (Juta)']
+    uni_ukt2, ukt2 = top_ukt.iloc[1]['Universitas'], top_ukt.iloc[1]['Rata-rata UKT (Juta)']
+    
+    # Universitas dengan prodi terbanyak
+    uni_prodi1, prodi1 = top_prodi.iloc[0]['Universitas'], int(top_prodi.iloc[0]['Jumlah Program Studi'])
+    uni_prodi2, prodi2 = top_prodi.iloc[1]['Universitas'], int(top_prodi.iloc[1]['Jumlah Program Studi'])
+    
+    # Universitas dengan daya tampung tertinggi
+    uni_daya1, daya1 = top_daya.iloc[0]['Universitas'], int(top_daya.iloc[0]['Rata-rata Daya Tampung'])
+    uni_daya2, daya2 = top_daya.iloc[1]['Universitas'], int(top_daya.iloc[1]['Rata-rata Daya Tampung'])
+    uni_daya3, daya3 = top_daya.iloc[2]['Universitas'], int(top_daya.iloc[2]['Rata-rata Daya Tampung'])
+    
     st.markdown("""### 💡 Insight Analisis""")
     st.markdown(f"""
-        Visualisasi ini menggambarkan perbandingan rata-rata UKT, jumlah program studi, dan daya tampung dari 12 universitas di Indonesia. Institut Teknologi Bandung (ITB) dan Universitas Indonesia (UI) memiliki rata-rata UKT tertinggi, masing-masing sebesar 30 juta dan 28,6 juta rupiah. Kedua universitas ini juga dikenal memiliki banyak program studi dengan kebutuhan operasional tinggi, seperti teknik dan kesehatan. UI sendiri tercatat memiliki jumlah program studi terbanyak, yaitu 36, diikuti oleh Universitas Gadjah Mada (UGM) dengan 31 program.
-
-        Dari segi daya tampung, Universitas Diponegoro (UNDIP) menempati posisi tertinggi dengan rata-rata daya tampung sebesar 62, disusul oleh Universitas Brawijaya (UB) dengan 59 dan Universitas Sebelas Maret (UNS) dengan 52. Beberapa universitas menunjukkan daya tampung yang besar meskipun memiliki jumlah program studi yang sedikit, seperti UNS dan Universitas Hasanuddin, yang dapat mengindikasikan adanya konsentrasi kapasitas pada program studi tertentu.
-                
-        Temuan ini menunjukkan bahwa jumlah program studi tidak selalu sebanding dengan daya tampung atau besarnya UKT. Universitas dengan jumlah program studi yang banyak cenderung memiliki cakupan keilmuan yang luas, tetapi kapasitas tampung dan biaya kuliah dapat bervariasi tergantung pada kebijakan internal masing-masing institusi. Oleh karena itu, pendekatan analisis tambahan seperti rasio daya tampung terhadap jumlah program studi dapat memberikan gambaran yang lebih proporsional.
+    Visualisasi ini memperlihatkan perbandingan rata-rata UKT, jumlah program studi, dan daya tampung dari beberapa universitas di Indonesia.
+    
+    - **{uni_ukt1}** dan **{uni_ukt2}** tercatat memiliki **rata-rata UKT tertinggi**, yaitu masing-masing **{ukt1:.1f} juta** dan **{ukt2:.1f} juta rupiah**.
+    - Dari sisi jumlah program studi, **{uni_prodi1}** memiliki paling banyak, yaitu **{prodi1} prodi**, disusul oleh **{uni_prodi2}** dengan **{prodi2} prodi**.
+    - Sedangkan untuk **rata-rata daya tampung tertinggi**, **{uni_daya1}** menempati posisi teratas dengan **{daya1} mahasiswa per prodi**, diikuti oleh **{uni_daya2} ({daya2})** dan **{uni_daya3} ({daya3})**.
+    
+    Fakta menarik dari data ini adalah bahwa **jumlah program studi tidak selalu berkorelasi langsung dengan daya tampung atau besarnya UKT**. Beberapa universitas dengan jumlah prodi terbatas justru memiliki daya tampung yang besar, mengindikasikan konsentrasi kapasitas pada bidang tertentu.
+    
+    Untuk analisis lanjutan, pendekatan seperti **rasio daya tampung per prodi** atau **UKT rata-rata per mahasiswa** dapat memberikan wawasan yang lebih mendalam terkait efisiensi dan kebijakan pendidikan di masing-masing universitas.
     """)
+
 
     st.subheader("Filter Data Berdasarkan Provinsi")
     provinsi_list = dfsemua['Provinsi'].unique()
