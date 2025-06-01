@@ -10,7 +10,8 @@ import re
 @st.cache_data
 def load_and_preprocess_data():
     """Load and preprocess the IUP data"""
-    url = 'https://github.com/syamsulmaarip05/PROJEKVINIX/raw/refs/heads/main/data/DATAPROJEKNLP.csv'Add commentMore actions
+    url = 'https://github.com/syamsulmaarip05/PROJEKVINIX/raw/refs/heads/main/data/DATAPROJEKNLP.csv'
+    
     df = pd.read_csv(url)
     
     # Standardize Program Studi column
