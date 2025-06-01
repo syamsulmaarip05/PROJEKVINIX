@@ -329,6 +329,7 @@ with tab2:
                     UKT WNI tertinggi adalah pada prodi **{top3_detail[0]}**, dan 3 prodi dengan UKT terendah adalah **{bottom3_str}**.
                     Selisih antara UKT WNI tertinggi dan terendah adalah **Rp {selisih:,.0f}**.
                 """)
+    #sumber referensi
     # Ambil sumber unik per universitas
     sumber_unik = df_univ.groupby('Universitas')['SUMBER'].first().reset_index()
     st.markdown("### Sumber Data")
@@ -336,6 +337,7 @@ with tab2:
         st.markdown(f"- **{row['Universitas']}**: {row['SUMBER']}")
 
 with tab3:
+    # Salin dan pastikan kolom numerik
     dfsemua = df.copy()
     dfsemua['UKT WNI'] = pd.to_numeric(dfsemua['UKT WNI'], errors='coerce').fillna(0)
     dfsemua['Daya Tampung'] = pd.to_numeric(dfsemua['Daya Tampung'], errors='coerce').fillna(0)
@@ -350,6 +352,7 @@ with tab3:
     col2.metric("Rata-Rata UKT", f"{rata_rataUkt:,.0f}")
     col3.metric("Rata-Rata Daya Tampung", f"{rata_rataDayaTampung:,.0f}")
 
+    # Konversi UKT ke satuan juta
     df['UKT WNI'] = pd.to_numeric(df['UKT WNI'], errors='coerce').fillna(0) / 1e6
     df['Daya Tampung'] = pd.to_numeric(df['Daya Tampung'], errors='coerce').fillna(0)
 
@@ -364,13 +367,17 @@ with tab3:
         'Daya Tampung': 'Rata-rata Daya Tampung'
     }).reset_index()
 
+    # Urutkan berdasarkan UKT
     df_grouped = df_grouped.sort_values('Rata-rata UKT (Juta)', ascending=False)
 
+    # Tentukan nilai maksimum untuk sumbu Y agar semua data muat
     max_ukt = df_grouped['Rata-rata UKT (Juta)'].max()
     max_daya = df_grouped['Rata-rata Daya Tampung'].max()
     max_prodi = df_grouped['Jumlah Program Studi'].max()
     max_y = max(max_ukt, max_daya, max_prodi)
+    buffer_y = max_y * 1.2  # Tambahan ruang di atas grafik
 
+    # Buat grafik batang
     fig = go.Figure()
 
     fig.add_trace(go.Bar(
@@ -403,6 +410,7 @@ with tab3:
         hovertemplate='Jumlah Prodi: %{text}<extra></extra>'
     ))
 
+    # Update layout
     fig.update_layout(
         title='PERBANDINGAN UKT (Juta), DAYA TAMPUNG & JUMLAH PRODI (Nilai Asli)',
         xaxis=dict(title='Universitas', tickangle=-45),
@@ -420,16 +428,20 @@ with tab3:
     st.plotly_chart(fig, use_container_width=True)
 
 
+    # Ambil universitas dengan UKT tertinggi
     top_ukt = df_grouped.sort_values('Rata-rata UKT (Juta)', ascending=False).head(2)
     top_prodi = df_grouped.sort_values('Jumlah Program Studi', ascending=False).head(2)
     top_daya = df_grouped.sort_values('Rata-rata Daya Tampung', ascending=False).head(3)
     
+    # Universitas dengan UKT tertinggi
     uni_ukt1, ukt1 = top_ukt.iloc[0]['Universitas'], top_ukt.iloc[0]['Rata-rata UKT (Juta)']
     uni_ukt2, ukt2 = top_ukt.iloc[1]['Universitas'], top_ukt.iloc[1]['Rata-rata UKT (Juta)']
     
+    # Universitas dengan prodi terbanyak
     uni_prodi1, prodi1 = top_prodi.iloc[0]['Universitas'], int(top_prodi.iloc[0]['Jumlah Program Studi'])
     uni_prodi2, prodi2 = top_prodi.iloc[1]['Universitas'], int(top_prodi.iloc[1]['Jumlah Program Studi'])
     
+    # Universitas dengan daya tampung tertinggi
     uni_daya1, daya1 = top_daya.iloc[0]['Universitas'], int(top_daya.iloc[0]['Rata-rata Daya Tampung'])
     uni_daya2, daya2 = top_daya.iloc[1]['Universitas'], int(top_daya.iloc[1]['Rata-rata Daya Tampung'])
     uni_daya3, daya3 = top_daya.iloc[2]['Universitas'], int(top_daya.iloc[2]['Rata-rata Daya Tampung'])
