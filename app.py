@@ -10,7 +10,9 @@ import re
 @st.cache_data
 def load_and_preprocess_data():
     """Load and preprocess the IUP data"""
-    df = pd.read_csv("data\DATA PROJEK VINIX baru (4).csv")
+    url = 'https://github.com/syamsulmaarip05/PROJEKVINIX/raw/refs/heads/main/data/DATAPROJEKNLP.csv'Add commentMore actions
+    df = pd.read_csv(url)
+    
     # Standardize Program Studi column
     df['Program Studi'] = df['Program Studi'].str.title().str.strip()
     df['Program Studi'] = df['Program Studi'].apply(lambda x: re.sub(r'\s+', ' ', x))
